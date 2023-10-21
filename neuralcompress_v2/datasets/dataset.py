@@ -20,7 +20,6 @@ class DatasetTPC(Dataset):
     def __init__(self,
                  dataroot,
                  split      = 'train',
-                 suffix     = None,
                  dimension  = 2,
                  axis_order = ('azimuth', 'beam', 'layer')):
         """
@@ -34,10 +33,7 @@ class DatasetTPC(Dataset):
         dataroot = Path(dataroot)
         assert dataroot.exists(), f'{dataroot} does not exist!'
 
-        if suffix is not None:
-            manifest = dataroot/f'{split}_{suffix}.txt'
-        else:
-            manifest = dataroot/f'{split}.txt'
+        manifest = dataroot/f'{split}.txt'
         assert manifest.exists(), f'{manifest} does not exist!'
 
         with open(manifest, 'r') as file_handle:
