@@ -26,7 +26,7 @@ from neuralcompress_v2.models.loss import BCAELoss
 
 os.environ['CUDA_DEVICE_ORDER'] = "PCI_BUS_ID"
 
-DATA_ROOT = Path('/data/yhuang2/sphenix/auau/highest_framedata_3d/outer/')
+# DATA_ROOT = Path('/data/yhuang2/sphenix/auau/highest_framedata_3d/outer/')
 
 def get_args(description):
     """
@@ -34,17 +34,21 @@ def get_args(description):
     """
     parser = argparse.ArgumentParser(description)
     # data parameters
+    parser.add_argument('--data-path',
+                        dest    = 'data_path',
+                        type    = str,
+                        help    = 'location of the data')
     parser.add_argument('--log',
-                        action = 'store_true',
-                        help   = ('use the flag to compress ADC value '
-                                  'in log scale. log ADC = log2(ADC + 1)'))
+                        action  = 'store_true',
+                        help    = ('use the flag to compress ADC value '
+                                   'in log scale. log ADC = log2(ADC + 1)'))
     parser.add_argument('--transform',
-                        action = 'store_true',
-                        help   = ('whether to transform the regression '
-                                  'output. If use log scaled data, '
-                                  'transform function is 6 + 3 * exp(x). '
-                                  'The transform function for raw ADC is '
-                                  '64 + 6 * exp(x)'))
+                        action  = 'store_true',
+                        help    = ('whether to transform the regression '
+                                   'output. If use log scaled data, '
+                                   'transform function is 6 + 3 * exp(x). '
+                                   'The transform function for raw ADC is '
+                                   '64 + 6 * exp(x)'))
     parser.add_argument('--reg-loss',
                         dest    = 'reg_loss',
                         choices = ('mse', 'mae'),
@@ -63,32 +67,38 @@ def get_args(description):
                         default = 3,
                         help    = 'number of decoder layers (default = 3)')
     parser.add_argument('--clf-threshold',
-                        dest = 'clf_threshold',
-                        type = float,
+                        dest    = 'clf_threshold',
+                        type    = float,
                         default = 0.5,
-                        help   = ('Threshold for classification output '
-                                  '(default = 0.5)'))
+                        help    = ('Threshold for classification output '
+                                   '(default = 0.5)'))
     # training parameters
     parser.add_argument('--half-training',
-                        dest   = 'half_training',
-                        action = 'store_true',
-                        help   = ('use the flag to turn on half-precision '
-                                  'training'))
+                        dest    = 'half_training',
+                        action  = 'store_true',
+                        help    = ('use the flag to turn on half-precision '
+                                   'training'))
     parser.add_argument('--num-epochs',
-                        dest = 'num_epochs',
-                        type = int,
-                        help = 'number of epochs')
+                        dest    = 'num_epochs',
+                        type    = int,
+                        help    = 'number of epochs')
     parser.add_argument('--num-warmup-epochs',
-                        dest = 'num_warmup_epochs',
-                        type = int,
-                        help = ('number of warmup epochs, '
-                                'must be smaller than number of epochs'))
+                        dest    = 'num_warmup_epochs',
+                        type    = int,
+                        help    = ('number of warmup epochs, '
+                                   'must be smaller than number of epochs'))
     parser.add_argument('--batches-per-epoch',
                         dest    = 'batches_per_epoch',
                         type    = int,
                         default = float('inf'),
                         help    = ('maximum number of batches per epoch, '
                                    '(default = inf)'))
+    parser.add_argument('--validation-batches-per-epoch',
+                        dest    = 'validation_batches_per_epoch',
+                        type    = int,
+                        default = 50,
+                        help    = ('maximum number of validation batches per epoch, '
+                                   '(default = 50)'))
     parser.add_argument('--sched-steps',
                         dest    = 'sched_steps',
                         type    = int,
@@ -246,8 +256,13 @@ def run_epoch(*,
 
 def main():
 
-    args = get_args('2d TPC Data Compression')
+    args = get_args('2D TPC Data Compression')
+
     # data parameters
+    data_path = Path(args.data_path)
+    if not data_path.exists():
+        raise IOException(f'Path does not exist: {data_path}')
+
     log       = args.log
     transform = args.transform
     reg_loss  = args.reg_loss
@@ -266,15 +281,16 @@ def main():
         torch.cuda.set_device(args.gpu_id)
 
     # training and model saving parameters
-    num_epochs         = args.num_epochs
-    num_warmup_epochs  = args.num_warmup_epochs
-    batch_size         = args.batch_size
-    batches_per_epoch  = args.batches_per_epoch
-    learning_rate      = args.learning_rate
-    sched_steps        = args.sched_steps
-    sched_gamma        = args.sched_gamma
-    save_frequency     = args.save_frequency
-    checkpoints        = Path(args.checkpoint_path)
+    num_epochs                   = args.num_epochs
+    num_warmup_epochs            = args.num_warmup_epochs
+    batch_size                   = args.batch_size
+    batches_per_epoch            = args.batches_per_epoch
+    validation_batches_per_epoch = args.validation_batches_per_epoch
+    learning_rate                = args.learning_rate
+    sched_steps                  = args.sched_steps
+    sched_gamma                  = args.sched_gamma
+    save_frequency               = args.save_frequency
+    checkpoints                  = Path(args.checkpoint_path)
 
     # set up checkpoint folder and save config
     # assert not checkpoints.exists()
@@ -319,12 +335,10 @@ def main():
         # data loader
         dataset_train = DatasetTPC(DATA_ROOT,
                                    split      = 'train',
-                                   suffix     = 'by_event',
                                    dimension  = 2,
                                    axis_order = ('layer', 'azimuth', 'beam'))
         dataset_valid = DatasetTPC(DATA_ROOT,
                                    split      = 'test',
-                                   suffix     = 'by_event',
                                    dimension  = 2,
                                    axis_order = ('layer', 'azimuth', 'beam'))
         dataloader_train = DataLoader(dataset_train,
@@ -363,8 +377,7 @@ def main():
             print(f'current learning rate = {current_lr:.10f}')
 
             # train
-            desc = (f'Train ({num_encoder_layers}, {num_decoder_layers}) '
-                    f'Epoch {epoch} / {num_epochs}')
+            desc = (f'Train Epoch {epoch} / {num_epochs}')
             train_stat = run_epoch(encoder           = encoder,
                                    decoder           = decoder,
                                    loss_fn           = loss_fn,
@@ -388,7 +401,7 @@ def main():
                                        dataloader        = dataloader_valid,
                                        desc              = desc,
                                        optimizer         = None,
-                                       batches_per_epoch = 50,
+                                       batches_per_epoch = validation_batches_per_epoch,
                                        device            = device,
                                        half_training     = half_training)
 
