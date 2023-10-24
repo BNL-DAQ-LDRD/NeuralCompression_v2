@@ -36,7 +36,8 @@ Decompress the pretrained models by
    blocks are available. Will update upon request.
 
 ## Test
-As an example, assume that 
+### Example test command
+Assume that 
 - the data is saved at `path_to_data`,
 - the checkpoint folder is `path_to_checkpoints`,
 - the result will be saved at `path_to_result`, and
@@ -45,7 +46,7 @@ As an example, assume that
 Then one can run the following command to get the result
 > `python train_test/test.py --data-path path_to_data --checkpoint-path path_to_checkpoints --save-path path_to_result --num-test-examples 10`
 
-**Other parameters for `test.py`:**
+### Other parameters for test
 - `dimension`: the dimension of the data is loaded as. Use 2 for BCAE-2D model and use 3 for BCAE++ and BCAE-HT
 - `log`: 0 for raw ADC value, 1 for log scale ADC value.
   (default = 1 since pretrained models were trained in log scale)
@@ -61,7 +62,7 @@ Then one can run the following command to get the result
 - `num-test-examples`: If you want to test on all existing test examples (18886),
   don't use the flag.
 
-**Result content**
+### Content of the result
 In the `path_to_result`, there will be a folder called `frames` and a `CSV` file called `metrics.csv`. 
 The `metrics.csv` will contain a table with columns `occupancy`, `mse`, `mae`, `psnr`, `precision`, and `recall`.
 Each row of the table is for one input.
@@ -70,11 +71,14 @@ In the folder `frames`, we save the input, the code (compressed data in half pre
 and the reconstruction of one input as an `NPZ` file with fields: `input`, `code`, and `reconstruction`.
 
 ## Train
+### Example train command
 If you want to train models from scratch, use the following commands
 - For 2D models:
   > `python train_test/train2d.py --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
 - For 3D models:
   > `python train_test/train3d.py --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
 
-**Other parameters for `train2d.py`:** (TBD)
+### Other parameters for training 
+For flag parameters `log`, `transform`, `clf-threshold`, `device`, and `gpu-id`, see Section [Other parameters for test](other-parameters-for-test)
+`train2d.py`:** (TBD)
 **Other parameters for `train3d.py`:** (TBD)
