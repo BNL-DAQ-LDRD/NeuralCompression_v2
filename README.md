@@ -1,7 +1,9 @@
 # NeuralCompression version 2
 Bicephalous Convolutional Autoencoder for Time-Projection Chamber Data Compression, Version 2. 
 
-[paper](https://arxiv.org/abs/2310.15026)
+In this repo, we present code used for generating the results in [paper](https://arxiv.org/abs/2310.15026) 
+_"Fast 2D Bicephalous Convolutional Autoencoder for Compressing 3D Time Projection Chamber Data"_
+accepted to the "9th International Workshop on Data Analysis and Reduction for Big Scientific Data" ([DRBSD9](https://drbsd.github.io/))
 
 ## Data
 We uploaded the data to [Zenodo](https://zenodo.org/records/10028587). 
@@ -74,11 +76,41 @@ and the reconstruction of one input as an `NPZ` file with fields: `input`, `code
 ### Example train command
 If you want to train models from scratch, use the following commands
 - For 2D models:
-  > `python train_test/train2d.py --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
+  > `python train_test/train2d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
 - For 3D models:
-  > `python train_test/train3d.py --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
+  > `python train_test/train3d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
 
 ### Other parameters for training 
-For flag parameters `log`, `transform`, `clf-threshold`, `device`, and `gpu-id`, see Section [Other parameters for test](other-parameters-for-test)
-`train2d.py`:** (TBD)
-**Other parameters for `train3d.py`:** (TBD)
+#### Shared parameters 
+For flag parameters `log`, `transform`, `clf-threshold`, `device`, and `gpu-id`, see Section [Other parameters for test](#other-parameters-for-test)
+
+- `reg-loss`: Loss function used for evaluating reconstruction error.
+  Choose from `mae` (mean absolute error) and `mse` (mean squared error).
+- `half-training`: use the flag to turn on mixed-precision training
+  (**Note:** I didn't notice any speedup, but I may not have implemented it correctly.
+  Please let me know your experience with mixed-precision training.)
+- `num-epochs`: Number of training epochs.
+- `num-warmup-epochs`: Number of warmup epochs. It must be smaller than number of epochs.
+  The number of epochs to keep the learning rate constant.
+- `batches-per-epoch`: Number of batches trained in each epoch.
+- `validation-batches-per-epoch`: Number of validation batches in each epoch.
+- `sched-steps`: The steps for every decrease in learning rate.
+  We use the `MultiStepLR` scheduler for the training.
+  We will multiply the learning rate by a `gamma` < 1 every `sched-steps` steps
+  after the first `num-warmup-epochs` epochs.
+- `sched-gamma`: The gamma that is multiplied to the learning rate.
+- `batch-size`: Batch size.
+- `learning-rate`: Learning rate.
+- `save-frequency`: Saving checkpoints every `save-frequency` epochs.
+- `checkpoint-path`: Directory to save checkpoints.
+  
+#### Model-specific parameters for 2D BCAEs (`train2d.py`)
+- `num-encoder-layers`: Number of encoder blocks.
+- `num-decoder-layers`: Number of decoder blocks.
+
+#### Model-specific parameters for 3D BCAEs (`train3d.py`) 
+- `model-type`: Type of 3d BCAE models.
+  In this release, we provide two choices for 3d BCAE models:
+  - `BCAE++`: A modification of the original BCAE;
+  - `BCAE-HT`: A modification of BCAE++ by using smaller numbers of output channels in each encoder block.
+    The HT here stands for high throughput.
