@@ -77,3 +77,4 @@ If you want to train models from scratch, use the following commands
   > `python train_test/train3d.py --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
 
 **Other parameters for `train2d.py`:** (TBD)
+**Other parameters for `train3d.py`:** (TBD)
