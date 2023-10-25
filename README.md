@@ -46,7 +46,7 @@ Assume that
 - 10 examples will be tested.
 
 Then, one can run the following command inside the folder `train_test` to get the result
-> `python train_test/test.py --data-path path_to_data --checkpoint-path path_to_checkpoints --save-path path_to_result --num-test-examples 10`
+> `python test.py --data-path path_to_data --checkpoint-path path_to_checkpoints --save-path path_to_result --num-test-examples 10`
 
 ### Content of the result
 In the `path_to_result`, there will be a folder called `frames` and a `CSV` file called `metrics.csv`. 
