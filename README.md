@@ -74,11 +74,11 @@ and the reconstruction of one input as an `NPZ` file with fields: `input`, `code
 
 ## Train
 ### Example train command
-If you want to train models from scratch, use the following commands
+If you want to train models from scratch, use the following commands inside of the folder `train_test`
 - For 2D models:
-  > `python train_test/train2d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
+  > `python train2d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
 - For 3D models:
-  > `python train_test/train3d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
+  > `python train3d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
 
 ### Other parameters for training 
 #### Shared parameters 
