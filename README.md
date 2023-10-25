@@ -13,6 +13,9 @@ Create the conda environment with the `yaml` file provided by running
 Activate the environment by running
 > `conda activate neuralcompress2`
 
+Install the package by running
+> `python setup.py develop`
+
 ## Data
 We uploaded the data to [Zenodo](https://zenodo.org/records/10028587).
 
