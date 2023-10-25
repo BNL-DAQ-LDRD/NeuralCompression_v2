@@ -5,6 +5,14 @@ In this repo, we present code used for generating the results in [paper](https:/
 _"Fast 2D Bicephalous Convolutional Autoencoder for Compressing 3D Time Projection Chamber Data"_
 accepted to the "9th International Workshop on Data Analysis and Reduction for Big Scientific Data" ([DRBSD9](https://drbsd.github.io/))
 
+## Setup running environment
+
+Create the conda environment with the `yaml` file provided by running 
+> `conda env create -f contrib/environment.yaml`
+
+Activate the environment by running
+> `conda activate neuralcompress2`
+
 ## Data
 We uploaded the data to [Zenodo](https://zenodo.org/records/10028587). 
 
