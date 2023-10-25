@@ -1,20 +1,20 @@
 # NeuralCompression version 2
-Bicephalous Convolutional Autoencoder for Time-Projection Chamber Data Compression, Version 2. 
+Bicephalous Convolutional Autoencoder for Time-Projection Chamber Data Compression, Version 2.
 
-In this repo, we present code used for generating the results in [paper](https://arxiv.org/abs/2310.15026) 
+In this repo, we present code used for generating the results in [paper](https://arxiv.org/abs/2310.15026)
 _"Fast 2D Bicephalous Convolutional Autoencoder for Compressing 3D Time Projection Chamber Data"_
 accepted to the "9th International Workshop on Data Analysis and Reduction for Big Scientific Data" ([DRBSD9](https://drbsd.github.io/))
 
 ## Setup running environment
 
-Create the conda environment with the `yaml` file provided by running 
+Create the conda environment with the `yaml` file provided by running
 > `conda env create -f contrib/environment.yaml`
 
 Activate the environment by running
 > `conda activate neuralcompress2`
 
 ## Data
-We uploaded the data to [Zenodo](https://zenodo.org/records/10028587). 
+We uploaded the data to [Zenodo](https://zenodo.org/records/10028587).
 
 The data can be downloaded either directly from the website or by using the following command
 > `wget https://zenodo.org/records/10028587/files/outer.tgz`
@@ -26,7 +26,7 @@ More details of the data can be found in the paper and the Zenodo description.
 
 ## Pretrained Models
 
-We uploaded the pretrained models to [Zenodo](https://zenodo.org/records/10028933). 
+We uploaded the pretrained models to [Zenodo](https://zenodo.org/records/10028933).
 We published three pretrained models:
 - `BCAE-2D`: A 2D BCAE model with 4 encoder blocks and 8 decoder blocks
 - `BCAE++`: A 3D BCAE model with a larger encoder and higher reconstruction accuracy
@@ -35,7 +35,7 @@ We published three pretrained models:
 The pretrained models can be downloaded either directly from the website or by using the following command:
 > `wget https://zenodo.org/records/10028933/preview/BCAEs.zip`
 
-Decompress the pretrained models by 
+Decompress the pretrained models by
 > `unzip BCAEs.zip`
 
 **Note for pretrained models**
@@ -47,7 +47,7 @@ Decompress the pretrained models by
 
 ## Test
 ### Example test command
-Assume that 
+Assume that
 - the data is saved at `path_to_data`,
 - the checkpoint folder is `path_to_checkpoints`,
 - the result will be saved at `path_to_result`, and
@@ -57,11 +57,11 @@ Then, one can run the following command inside the folder `train_test` to get th
 > `python test.py --data-path path_to_data --checkpoint-path path_to_checkpoints --save-path path_to_result --num-test-examples 10`
 
 ### Content of the result
-In the `path_to_result`, there will be a folder called `frames` and a `CSV` file called `metrics.csv`. 
+In the `path_to_result`, there will be a folder called `frames` and a `CSV` file called `metrics.csv`.
 The `metrics.csv` will contain a table with columns `occupancy`, `mse`, `mae`, `psnr`, `precision`, and `recall`.
 Each row of the table is for one input.
 
-In the folder `frames`, we save the input, the code (compressed data in half precision), 
+In the folder `frames`, we save the input, the code (compressed data in half precision),
 and the reconstruction of one input as an `NPZ` file with fields: `input`, `code`, and `reconstruction`.
 
 ### Other parameters for test
@@ -88,8 +88,8 @@ If you want to train models from scratch, use the following commands inside of t
 - For 3D models:
   > `python train3d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
 
-### Other parameters for training 
-#### Shared parameters 
+### Other parameters for training
+#### Shared parameters
 For flag parameters `log`, `transform`, `clf-threshold`, `device`, and `gpu-id`, see Section [Other parameters for test](#other-parameters-for-test)
 
 - `reg-loss`: Loss function used for evaluating reconstruction error.
@@ -111,13 +111,13 @@ For flag parameters `log`, `transform`, `clf-threshold`, `device`, and `gpu-id`,
 - `learning-rate`: Learning rate.
 - `save-frequency`: Saving checkpoints every `save-frequency` epochs.
 - `checkpoint-path`: Directory to save checkpoints.
-  
+
 #### Model-specific parameters for 2D BCAEs (`train2d.py`)
 - `num-encoder-layers`: Number of encoder blocks.
 - `num-decoder-layers`: Number of decoder blocks.
 
-#### Model-specific parameters for 3D BCAEs (`train3d.py`) 
-- `model-type`: Type of 3d BCAE models.
+#### Model-specific parameters for 3D BCAEs (`train3d.py`)
+- `model-type`: Type of 3d BCAE models. Choose from (bcae++, bcae-ht).
   In this release, we provide two choices for 3d BCAE models:
   - `BCAE++`: A modification of the original BCAE;
   - `BCAE-HT`: A modification of BCAE++ by using smaller numbers of output channels in each encoder block.
