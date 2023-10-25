@@ -8,7 +8,7 @@ accepted to the "9th International Workshop on Data Analysis and Reduction for B
 ## Setup running environment
 
 Create the conda environment with the `yaml` file provided by running
-> `conda env create -f contrib/environment.yaml`
+```conda env create -f contrib/environment.yaml```
 
 Activate the environment by running
 > `conda activate neuralcompress2`
