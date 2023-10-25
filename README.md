@@ -41,10 +41,10 @@ The pretrained models can be downloaded either directly from the website or by u
 Decompress the pretrained models by
 > `unzip BCAEs.zip`
 
-**NOTE:** Do make sure to use `md5sum [FILENAME]` to check whether the `md5` checksum matches with
-the ones listed under the Zenodo download link
+**NOTE:** Make sure to use `md5sum [FILENAME]` to check whether the `md5` checksum matches with
+the ones listed under the Zenodo download link.
 ![md5checksum](https://github.com/BNL-DAQ-LDRD/NeuralCompression_v2/assets/22546248/673eb86a-3228-450e-bb16-beedb16adb44)
-
+If they don't match, unpackaging (`unzip`, `tar -xvzf`) can fail. Reruning the `wget` command may solve the problem. 
 
 ### Note for pretrained models
 1. All models were trained on log-scale ADC values, log2(ADC + 1);
