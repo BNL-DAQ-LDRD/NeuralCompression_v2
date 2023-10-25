@@ -45,8 +45,16 @@ Assume that
 - the result will be saved at `path_to_result`, and
 - 10 examples will be tested.
 
-Then one can run the following command to get the result
+Then, one can run the following command inside the folder `train_test` to get the result
 > `python train_test/test.py --data-path path_to_data --checkpoint-path path_to_checkpoints --save-path path_to_result --num-test-examples 10`
+
+### Content of the result
+In the `path_to_result`, there will be a folder called `frames` and a `CSV` file called `metrics.csv`. 
+The `metrics.csv` will contain a table with columns `occupancy`, `mse`, `mae`, `psnr`, `precision`, and `recall`.
+Each row of the table is for one input.
+
+In the folder `frames`, we save the input, the code (compressed data in half precision), 
+and the reconstruction of one input as an `NPZ` file with fields: `input`, `code`, and `reconstruction`.
 
 ### Other parameters for test
 - `dimension`: the dimension of the data is loaded as. Use 2 for BCAE-2D model and use 3 for BCAE++ and BCAE-HT
@@ -63,14 +71,6 @@ Then one can run the following command to get the result
   generated with half-precision or full-precision.
 - `num-test-examples`: If you want to test on all existing test examples (18886),
   don't use the flag.
-
-### Content of the result
-In the `path_to_result`, there will be a folder called `frames` and a `CSV` file called `metrics.csv`. 
-The `metrics.csv` will contain a table with columns `occupancy`, `mse`, `mae`, `psnr`, `precision`, and `recall`.
-Each row of the table is for one input.
-
-In the folder `frames`, we save the input, the code (compressed data in half precision), 
-and the reconstruction of one input as an `NPZ` file with fields: `input`, `code`, and `reconstruction`.
 
 ## Train
 ### Example train command
