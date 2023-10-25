@@ -12,19 +12,22 @@ Create the conda environment with the `yaml` file provided by running
 ```conda env create -f contrib/environment.yaml```
 
 Activate the environment by running
-> `conda activate neuralcompress2`
+
+```conda activate neuralcompress2```
 
 Install the package by running
-> `python setup.py develop`
+
+```python setup.py develop```
 
 ## Data
 We uploaded the data to [Zenodo](https://zenodo.org/records/10028587).
 
 The data can be downloaded either directly from the website or by using the following command
-> `wget https://zenodo.org/records/10028587/files/outer.tgz`
+
+```wget https://zenodo.org/records/10028587/files/outer.tgz```
 
 Decompress the dataset by
-> `tar -xvzf outer.tgz`
+```tar -xvzf outer.tgz```
 
 More details of the data can be found in the paper and the Zenodo description.
 
@@ -37,15 +40,11 @@ We published three pretrained models:
 - `BCAE-HT`: A 3D BCAE model with a smaller encoder and higher throughput
 
 The pretrained models can be downloaded either directly from the website or by using the following command:
-> `wget https://zenodo.org/records/10028933/files/BCAEs.zip`
+
+```wget https://zenodo.org/records/10028933/files/BCAEs.zip```
 
 Decompress the pretrained models by
-> `unzip BCAEs.zip`
-
-**NOTE:** Make sure to use `md5sum [FILENAME]` to check whether the `md5` checksum of the downloaded file matches with
-the ones listed under the Zenodo download link.
-![md5checksum](https://github.com/BNL-DAQ-LDRD/NeuralCompression_v2/assets/22546248/673eb86a-3228-450e-bb16-beedb16adb44)
-If they don't match, unpackaging (`unzip`, `tar -xvzf`) can fail. Reruning the `wget` command may solve the problem. 
+```unzip BCAEs.zip```
 
 ### Note for pretrained models
 1. All models were trained on log-scale ADC values, log2(ADC + 1);
@@ -63,7 +62,8 @@ Assume that
 - 10 examples will be tested.
 
 Then, one can run the following command inside the folder `train_test` to get the result
-> `python test.py --data-path path_to_data --checkpoint-path path_to_checkpoints --save-path path_to_result --num-test-examples 10`
+
+```python test.py --data-path path_to_data --checkpoint-path path_to_checkpoints --save-path path_to_result --num-test-examples 10```
 
 ### Content of the result
 In the `path_to_result`, there will be a folder called `frames` and a `CSV` file called `metrics.csv`.
@@ -76,9 +76,9 @@ and the reconstruction of one input as an `NPZ` file with fields: `input`, `code
 ### Other parameters for test
 - `dimension`: the dimension of the data is loaded as.
   Use 2 for BCAE-2D model and use 3 for BCAE++ and BCAE-HT. That is
-  > `python test.py --data-path path_to_data --dimension 2 --checkpoint-path path_to_BCAE-2D --save-path path_to_result`
+  ```python test.py --data-path path_to_data --dimension 2 --checkpoint-path path_to_BCAE-2D --save-path path_to_result```
   
-  > `python test.py --data-path path_to_data --dimension 3 --checkpoint-path path_to_BCAE++_or_BCAE-HT --save-path path_to_result`
+  ```python test.py --data-path path_to_data --dimension 3 --checkpoint-path path_to_BCAE++_or_BCAE-HT --save-path path_to_result```
 - `log`: 0 for raw ADC value, 1 for log scale ADC value.
   (default = 1 since pretrained models were trained in log scale)
 - `transform`: 0 for not using regression transformation, 1 for using transformation.
@@ -97,9 +97,9 @@ and the reconstruction of one input as an `NPZ` file with fields: `input`, `code
 ### Example train command
 If you want to train models from scratch, use the following commands inside of the folder `train_test`
 - For 2D models:
-  > `python train2d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
+  ```python train2d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints```
 - For 3D models:
-  > `python train3d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints`
+  ```python train3d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints```
 
 ### Other parameters for training
 #### Shared parameters
