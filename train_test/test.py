@@ -149,8 +149,6 @@ def main():
     dataloader = DataLoader(dataset, batch_size = 1, shuffle = False)
 
     # load model
-    print(checkpoint_path/'enc_last.pth')
-    input()
     encoder = load(checkpoint_path/'enc_last.pth').to(device)
     decoder = load(checkpoint_path/'dec_last.pth').to(device)
 
