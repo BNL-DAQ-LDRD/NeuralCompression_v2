@@ -75,8 +75,9 @@ and the reconstruction of one input as an `NPZ` file with fields: `input`, `code
 ### Other parameters for test
 - `dimension`: the dimension of the data is loaded as.
   Use 2 for BCAE-2D model and use 3 for BCAE++ and BCAE-HT. That is
-  > `python test.py --data-path path_to_data **--dimension 2** --checkpoint-path path_to_BCAE-2D --save-path path_to_result
-  > `python test.py --data-path path_to_data **--dimension 3** --checkpoint-path path_to_BCAE++ --save-path path_to_result
+  > `python test.py --data-path path_to_data --dimension 2 --checkpoint-path path_to_BCAE-2D --save-path path_to_result` and
+  
+  > `python test.py --data-path path_to_data --dimension 3 --checkpoint-path path_to_BCAE++ --save-path path_to_result`
 - `log`: 0 for raw ADC value, 1 for log scale ADC value.
   (default = 1 since pretrained models were trained in log scale)
 - `transform`: 0 for not using regression transformation, 1 for using transformation.
