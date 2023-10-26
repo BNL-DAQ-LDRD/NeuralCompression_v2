@@ -1,7 +1,7 @@
 # NeuralCompression version 2
 Bicephalous Convolutional Autoencoder for Time-Projection Chamber Data Compression, Version 2.
 
-In this repo, we present code used for generating the results in [paper](https://arxiv.org/abs/2310.15026)
+In this repo, we present code used for generating the results in the [paper](https://arxiv.org/abs/2310.15026)
 _"Fast 2D Bicephalous Convolutional Autoencoder for Compressing 3D Time Projection Chamber Data"_
 accepted to the "9th International Workshop on Data Analysis and Reduction for Big Scientific Data" ([DRBSD9](https://drbsd.github.io/))
 
@@ -19,7 +19,7 @@ and all commands should be run inside `./`.
 For simplicity, we assume that the data will be saved to `./data` and
 the checkpoints will be saved to `./checkpoints`. **NOTE:** Please feel free to
 save data and checkpoints to other locations, but don't forget to change the 
-commands accordingly.
+following commands accordingly.
 
 ### Conda environment package installation
 Create the conda environment with the `yaml` file provided by running
@@ -42,6 +42,7 @@ The data can be downloaded either directly from the website or by using the foll
 ```wget -P ./data https://zenodo.org/records/10028587/files/outer.tgz```
 
 Decompress the dataset by
+
 ```tar -xvzf ./data/outer.tgz -C ./data```
 
 More details of the data can be found in the paper and the Zenodo description.
@@ -59,42 +60,63 @@ The pretrained models can be downloaded either directly from the website or by u
 ```wget -P ./checkpoints https://zenodo.org/records/10028933/files/BCAEs.zip```
 
 Decompress the pretrained models by
+
 ```unzip ./checkpoints/BCAEs.zip -d ./checkpoints```
 
 ### Note for pretrained models
 1. All models were trained on log-scale ADC values, log2(ADC + 1);
 2. All models were trained with transformation to regression output so that all values
    were above the (log) zero-suppression threshold.
-3. More pretrained models for 2D BCAE models with different numbers of encoder and decoder
+3. More pretrained models for 2D `BCAE` models with different numbers of encoder and decoder
    blocks are available. We can share them upon request.
-More details can be found in the paper and the description of the Zenodo deposits.
+
+More details can be found in the [paper](https://arxiv.org/abs/2310.15026).
 
 ## Test
 ### Example test command
-Assume that
-- the data is saved at `path_to_data`,
-- the checkpoint folder is `path_to_checkpoints`,
-- the result will be saved at `path_to_result`, and
-- 10 examples will be tested.
+Run the following command to get the code and reconstruction result for 10 test examples.
 
-Then, one can run the following command inside the folder `train_test` to get the result
+```python train_test/test.py --data-path ./data/outer --checkpoint-path checkpoints/BCAE++  --save-path ./test --num-test-examples 10```
 
-```python test.py --data-path path_to_data --checkpoint-path path_to_checkpoints --save-path path_to_result --num-test-examples 10```
+The `BCAE++` in the command can be replaced by `BCAE-HT` or `BCAE-2D`.
 
 ### Content of the result
-In the `path_to_result`, there will be a folder called `frames` and a `CSV` file called `metrics.csv`.
-The `metrics.csv` will contain a table with columns `occupancy`, `mse`, `mae`, `psnr`, `precision`, and `recall`.
-Each row of the table is for one input.
+In the folder `./test`, there will be a subfolder called `frames` and a `CSV` file called `metrics.csv`.
+The `metrics.csv` contains a table with each row for one test example and metrics
 
-In the folder `frames`, we save the input, the code (compressed data in half precision),
-and the reconstruction of one input as an `NPZ` file with fields: `input`, `code`, and `reconstruction`.
+| `occupancy` | `mse` | `mae` | `psnr` | `precision` | `recall` |
+
+- `occupancy`: Fraction of non-zero voxels
+- `mse`: Mean squared error of the reconstruction
+- `mae`: Mean absolute error of the reconstruction
+- `psnr`: [Peak signal-to-noise rate](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio)
+
+For the following two metrics, recall that a voxel will have label 1 if it has a positive ADC
+value and 0 if otherwise, and the classification decoder of a `BCAE` model
+will give a prediction on whether the voxel has a positive ADC value according to a threshold
+(see `clf_threshold below).
+- `precision`: Fraction of true 1 predictions among all 1 predictions. 
+- `recall`: Frction of true 1 predictions among all voxels with label 1.
+  
+
+
+In the subfolder `frames`, we save one `NPZ` file for one input test example.
+Each `NPZ` file has three fields:
+- `input`: the input test example (if the model is trained the log-scale ADC values,
+  the input is also saved in the log scale);
+- `code`: the compressed data in half-precision;
+- `reconstruction`: the reconstruction of the input.
 
 ### Other parameters for test
 - `dimension`: the dimension of the data is loaded as.
-  Use 2 for BCAE-2D model and use 3 for BCAE++ and BCAE-HT. That is
-  ```python test.py --data-path path_to_data --dimension 2 --checkpoint-path path_to_BCAE-2D --save-path path_to_result```
+  Use 2 for `BCAE-2D` model and use 3 for `BCAE++` and `BCAE-HT`. That is
+
+  ```python train_test/test.py --data-path ./data/outer --dimension 2 --checkpoint-path ./checkpoints/BCAE-2D --save-path ./test```
   
-  ```python test.py --data-path path_to_data --dimension 3 --checkpoint-path path_to_BCAE++_or_BCAE-HT --save-path path_to_result```
+  ```python train_test/test.py --data-path ./data/outer --dimension 3 --checkpoint-path ./checkpoints/BCAE-HT --save-path ./test```
+
+  The `BCAE-HT` in the second command can be `BCAE++`, too.
+  
 - `log`: 0 for raw ADC value, 1 for log scale ADC value.
   (default = 1 since pretrained models were trained in log scale)
 - `transform`: 0 for not using regression transformation, 1 for using transformation.
@@ -111,11 +133,19 @@ and the reconstruction of one input as an `NPZ` file with fields: `input`, `code
 
 ## Train
 ### Example train command
-If you want to train models from scratch, use the following commands inside of the folder `train_test`
+If you want to train models from scratch and 
+
+- save the checkpoints to folder `./my_checkpoints`;
+- train for 200 epochs with 100 epochs warmup (constant learning rate);
+
+use the following commands:
+
 - For 2D models:
-  ```python train2d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints```
+
+  ```python train_test/train2d.py --data-path ./data/outer --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path ./my_checkpoints```
 - For 3D models:
-  ```python train3d.py --data-path path_to_data --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path path_to_checkpoints```
+
+  ```python train_test/train3d.py --data-path ./data/outer --num-epochs 200 --num-warmup-epochs 100 --checkpoint-path ./my_checkpoints```
 
 ### Other parameters for training
 #### Shared parameters
@@ -135,7 +165,8 @@ For flag parameters `log`, `transform`, `clf-threshold`, `device`, and `gpu-id`,
   We use the `MultiStepLR` scheduler for the training.
   We will multiply the learning rate by a `gamma` < 1 every `sched-steps` steps
   after the first `num-warmup-epochs` epochs.
-- `sched-gamma`: The gamma that is multiplied to the learning rate.
+- `sched-gamma`: The learning rate is multiplied by gamma every `sched-steps` steps
+  after passing `num-warmup-epochs` epochs.
 - `batch-size`: Batch size.
 - `learning-rate`: Learning rate.
 - `save-frequency`: Saving checkpoints every `save-frequency` epochs.
