@@ -129,8 +129,9 @@ def main():
 
     # device and compute mode
     device = args.device
+    gpu_id = args.gpu_id
     if device == 'cuda':
-        torch.cuda.set_device(args.gpu_id)
+        torch.cuda.set_device(gpu_id)
     half   = args.half
 
     save_path = Path(args.save_path)
@@ -149,8 +150,32 @@ def main():
     dataloader = DataLoader(dataset, batch_size = 1, shuffle = False)
 
     # load model
-    encoder = load(checkpoint_path/'enc_last.pth').to(device)
-    decoder = load(checkpoint_path/'dec_last.pth').to(device)
+
+    if device == 'cuda':
+        location = f'cuda:{gpu_id}'
+    else:
+        location = 'cpu'
+
+    try:
+        encoder = load(checkpoint_path/'enc_last.pth')
+    except:
+        try:
+            encoder = load(checkpoint_path/'enc_last.pth',
+                           map_location = location)
+        except:
+            print('fail to load encoder')
+
+    try:
+        decoder = load(checkpoint_path/'dec_last.pth')
+    except:
+        try:
+            decoder = load(checkpoint_path/'dec_last.pth',
+                           map_location = location)
+        except:
+            print('fail to load decoder')
+
+    encoder = encoder.to(device)
+    decoder = decoder.to(device)
 
     if half:
         encoder = encoder.half()
