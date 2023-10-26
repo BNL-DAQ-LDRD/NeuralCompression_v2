@@ -113,9 +113,9 @@ will give a prediction on whether the voxel has a positive `ADC` value according
 - `recall`: Frction of true 1 predictions among all voxels with label 1.
 
 
-### Other parameters for test
+### Other parameters for tests
 - `dimension`: the dimension of the data is loaded as.
-  Use 2 for `BCAE-2D` model and use 3 for `BCAE++` and `BCAE-HT`.
+  Use 2 for the `BCAE-2D` model and use 3 for `BCAE++` and `BCAE-HT`.
 - `log`: 0 for raw `ADC` value, 1 for log-scale `ADC` value.
   (default = 1 since pretrained models were trained in log scale)
 - `transform`: 0 for not using regression transformation, 1 for using transformation.
