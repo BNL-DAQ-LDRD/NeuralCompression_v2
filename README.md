@@ -64,7 +64,7 @@ Decompress the pretrained models by
 ```unzip ./checkpoints/BCAEs.zip -d ./checkpoints```
 
 ### Note for pretrained models
-1. All models were trained on log-scale ADC values, log2(ADC + 1);
+1. All models were trained on log-scale `ADC` values, `log2(ADC + 1)`;
 2. All models were trained with transformation to regression output so that all values
    were above the (log) zero-suppression threshold.
 3. More pretrained models for 2D `BCAE` models with different numbers of encoder and decoder
@@ -73,15 +73,29 @@ Decompress the pretrained models by
 More details can be found in the [paper](https://arxiv.org/abs/2310.15026).
 
 ## Test
-### Example test command
-Run the following command to get the code and reconstruction result for 10 test examples.
+### Example test commands
+Run the following commands to get the code and reconstruction result for 10 test examples.
 
-```python train_test/test.py --data-path ./data/outer --checkpoint-path checkpoints/BCAE++  --save-path ./test --num-test-examples 10```
+- For a 2D `BCAE` model:
 
-The `BCAE++` in the command can be replaced by `BCAE-HT` or `BCAE-2D`.
+  ```python train_test/test.py --data-path ./data/outer --dimension 2 --checkpoint-path ./checkpoints/BCAE-2D --save-path ./test --num-test-examples 10```
+
+- For a 3D `BCAE` model:
+
+  ```python train_test/test.py --data-path ./data/outer --dimension 3 --checkpoint-path ./checkpoints/BCAE-HT --save-path ./test --num-test-examples 10```
+
+  The `BCAE-HT` here can be `BCAE++`.
 
 ### Content of the result
 In the folder `./test`, there will be a subfolder called `frames` and a `CSV` file called `metrics.csv`.
+
+In the subfolder `frames`, we save one `NPZ` file for one input test example.
+Each `NPZ` file has three fields:
+- `input`: the input test example (if the model is trained the log-scale `ADC` values,
+  the input is also saved in the log scale);
+- `code`: the compressed data in half-precision;
+- `reconstruction`: the reconstruction of the input.
+
 The `metrics.csv` contains a table with each row for one test example and metrics
 
 | `occupancy` | `mse` | `mae` | `psnr` | `precision` | `recall` |
@@ -91,33 +105,18 @@ The `metrics.csv` contains a table with each row for one test example and metric
 - `mae`: Mean absolute error of the reconstruction
 - `psnr`: [Peak signal-to-noise rate](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio)
 
-For the following two metrics, recall that a voxel will have label 1 if it has a positive ADC
+For the following two metrics, recall that a voxel will have label 1 if it has a positive `ADC`
 value and 0 if otherwise, and the classification decoder of a `BCAE` model
-will give a prediction on whether the voxel has a positive ADC value according to a threshold
+will give a prediction on whether the voxel has a positive `ADC` value according to a threshold
 (see `clf_threshold below).
 - `precision`: Fraction of true 1 predictions among all 1 predictions. 
 - `recall`: Frction of true 1 predictions among all voxels with label 1.
-  
 
-
-In the subfolder `frames`, we save one `NPZ` file for one input test example.
-Each `NPZ` file has three fields:
-- `input`: the input test example (if the model is trained the log-scale ADC values,
-  the input is also saved in the log scale);
-- `code`: the compressed data in half-precision;
-- `reconstruction`: the reconstruction of the input.
 
 ### Other parameters for test
 - `dimension`: the dimension of the data is loaded as.
-  Use 2 for `BCAE-2D` model and use 3 for `BCAE++` and `BCAE-HT`. That is
-
-  ```python train_test/test.py --data-path ./data/outer --dimension 2 --checkpoint-path ./checkpoints/BCAE-2D --save-path ./test```
-  
-  ```python train_test/test.py --data-path ./data/outer --dimension 3 --checkpoint-path ./checkpoints/BCAE-HT --save-path ./test```
-
-  The `BCAE-HT` in the second command can be `BCAE++`, too.
-  
-- `log`: 0 for raw ADC value, 1 for log scale ADC value.
+  Use 2 for `BCAE-2D` model and use 3 for `BCAE++` and `BCAE-HT`.
+- `log`: 0 for raw `ADC` value, 1 for log-scale `ADC` value.
   (default = 1 since pretrained models were trained in log scale)
 - `transform`: 0 for not using regression transformation, 1 for using transformation.
   (default = 1 since pretrained models were trained with the transformation)
@@ -136,7 +135,7 @@ Each `NPZ` file has three fields:
 If you want to train models from scratch and 
 
 - save the checkpoints to folder `./my_checkpoints`;
-- train for 200 epochs with 100 epochs warmup (constant learning rate);
+- train for 200 epochs with 100 epochs warmup (with constant learning rate);
 
 use the following commands:
 
