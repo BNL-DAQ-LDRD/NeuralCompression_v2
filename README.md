@@ -5,11 +5,26 @@ In this repo, we present code used for generating the results in [paper](https:/
 _"Fast 2D Bicephalous Convolutional Autoencoder for Compressing 3D Time Projection Chamber Data"_
 accepted to the "9th International Workshop on Data Analysis and Reduction for Big Scientific Data" ([DRBSD9](https://drbsd.github.io/))
 
-## Setup running environment
+## Set up running environment
 
+### Directory
+Download the repo to your local directory by running
+
+```git clone https://github.com/BNL-DAQ-LDRD/NeuralCompression_v2.git```
+
+And then, `cd` into the project folder `NeuralCompression_v2`. 
+From now on, we assume `NeuralCompression_v2` is our current directory `./`, 
+and all commands should be run inside `./`.
+
+For simplicity, we assume that the data will be saved to `./data` and
+the checkpoints will be saved to `./checkpoints`. **NOTE:** Please feel free to
+save data and checkpoints to other locations, but don't forget to change the 
+commands accordingly.
+
+### Conda environment package installation
 Create the conda environment with the `yaml` file provided by running
 
-```conda env create -f contrib/environment.yaml```
+```conda env create -f ./contrib/environment.yaml```
 
 Activate the environment by running
 
@@ -19,19 +34,19 @@ Install the package by running
 
 ```python setup.py develop```
 
-## Data
+## Download data
 We uploaded the data to [Zenodo](https://zenodo.org/records/10028587).
 
 The data can be downloaded either directly from the website or by using the following command
 
-```wget https://zenodo.org/records/10028587/files/outer.tgz```
+```wget -P ./data https://zenodo.org/records/10028587/files/outer.tgz```
 
 Decompress the dataset by
-```tar -xvzf outer.tgz```
+```tar -xvzf ./data/outer.tgz -C ./data```
 
 More details of the data can be found in the paper and the Zenodo description.
 
-## Pretrained Models
+## Download pretrained models
 
 We uploaded the pretrained models to [Zenodo](https://zenodo.org/records/10028933).
 We published three pretrained models:
@@ -41,17 +56,18 @@ We published three pretrained models:
 
 The pretrained models can be downloaded either directly from the website or by using the following command:
 
-```wget https://zenodo.org/records/10028933/files/BCAEs.zip```
+```wget -P ./checkpoints https://zenodo.org/records/10028933/files/BCAEs.zip```
 
 Decompress the pretrained models by
-```unzip BCAEs.zip```
+```unzip ./checkpoints/BCAEs.zip -d ./checkpoints```
 
 ### Note for pretrained models
 1. All models were trained on log-scale ADC values, log2(ADC + 1);
 2. All models were trained with transformation to regression output so that all values
    were above the (log) zero-suppression threshold.
 3. More pretrained models for 2D BCAE models with different numbers of encoder and decoder
-   blocks are available. Will update upon request.
+   blocks are available. We can share them upon request.
+More details can be found in the paper and the description of the Zenodo deposits.
 
 ## Test
 ### Example test command
