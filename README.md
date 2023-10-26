@@ -82,9 +82,9 @@ Run the following commands to get the code and reconstruction result for 10 test
 
 - For a 3D `BCAE` model:
 
-  ```python train_test/test.py --data-path ./data/outer --dimension 3 --checkpoint-path ./checkpoints/BCAE-HT --save-path ./test --num-test-examples 10```
+  ```python train_test/test.py --data-path ./data/outer --dimension 3 --checkpoint-path ./checkpoints/BCAE++ --save-path ./test --num-test-examples 10```
 
-  The `BCAE-HT` here can be `BCAE++`.
+  The `BCAE++` here can be `BCAE-HT`.
 
 ### Content of the result
 In the folder `./test`, there will be a subfolder called `frames` and a `CSV` file called `metrics.csv`.
