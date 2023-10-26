@@ -108,7 +108,7 @@ The `metrics.csv` contains a table with each row for one test example and metric
 For the following two metrics, recall that a voxel will have label 1 if it has a positive `ADC`
 value and 0 if otherwise, and the classification decoder of a `BCAE` model
 will give a prediction on whether the voxel has a positive `ADC` value according to a threshold
-(see `clf_threshold below).
+(see `clf_threshold` below).
 - `precision`: Fraction of true 1 predictions among all 1 predictions. 
 - `recall`: Frction of true 1 predictions among all voxels with label 1.
 
