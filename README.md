@@ -148,7 +148,7 @@ use the following commands:
 
 ### Other parameters for training
 #### Shared parameters
-For flag parameters `log`, `transform`, `clf-threshold`, `device`, and `gpu-id`, see Section [Other parameters for test](#other-parameters-for-test)
+For flag parameters `log`, `transform`, `clf-threshold`, `device`, and `gpu-id`, see Section [Other parameters for test](#other-parameters-for-test).
 
 - `reg-loss`: Loss function used for evaluating reconstruction error.
   Choose from `mae` (mean absolute error) and `mse` (mean squared error).
