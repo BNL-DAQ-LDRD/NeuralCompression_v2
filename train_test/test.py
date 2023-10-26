@@ -114,7 +114,7 @@ def main():
     # data parameters
     data_path = Path(args.data_path)
     if not data_path.exists():
-        raise IOException(f'Path does not exist: {data_path}')
+        raise FileNotFoundError(f'Path does not exist: {data_path}')
 
     dimension = args.dimension
     log       = args.log
@@ -125,7 +125,7 @@ def main():
     # model path
     checkpoint_path = Path(args.checkpoint_path)
     if not checkpoint_path.exists():
-        raise IOException(f'Path does not exist: {checkpoint_path}')
+        raise FileNotFoundError(f'Path does not exist: {checkpoint_path}')
 
     # device and compute mode
     device = args.device

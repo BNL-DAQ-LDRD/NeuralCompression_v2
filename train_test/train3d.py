@@ -257,7 +257,7 @@ def main():
     # data parameters
     data_path = Path(args.data_path)
     if not data_path.exists():
-        raise IOException(f'Path does not exist: {data_path}')
+        raise FileNotFoundError(f'Path does not exist: {data_path}')
 
     log       = args.log
     transform = args.transform
